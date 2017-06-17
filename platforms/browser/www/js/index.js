@@ -116,7 +116,7 @@ var locationApi = {
         // Send coordinates to server
         $.getJSON('http://maxbet.mk.azhar.arvixe.com/api/products/1/' + longitude + '/' + latitude + '/')
                 .done(function (data) {
-                    alert("sucessfully inserted coordinate to server");
+                    alert("sucessfully inserted coordinate to server 2");
                 })
                 .fail(function (jqXHR, textStatus, err) {
                         alert("fail gps 1 " + textStatus);
