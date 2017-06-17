@@ -38,13 +38,13 @@ var app = {
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
-        var parentElement = document.getElementById(id);
+       /* var parentElement = document.getElementById(id);
         var listeningElement = parentElement.querySelector('.listening');
         var receivedElement = parentElement.querySelector('.received');
 
         listeningElement.setAttribute('style', 'display:none;');
         receivedElement.setAttribute('style', 'display:block;');
-
+*/
         console.log('Received Event: ' + id);
     }
 
@@ -116,7 +116,7 @@ var locationApi = {
         // Send coordinates to server
         $.getJSON('http://maxbet.mk.azhar.arvixe.com/api/products/1/' + longitude + '/' + latitude + '/')
                 .done(function (data) {
-                    alert("sucessfully inserted coordinate to server 2");
+                    alert("sucessfully inserted coordinate to server long: " + longitude + " lat: " + latitude);
                 })
                 .fail(function (jqXHR, textStatus, err) {
                         alert("fail gps 1 " + textStatus);
@@ -196,7 +196,7 @@ var locationApi = {
     },
 
     drawMap: function(position) {
-            alert("draw poi");
+            alert("draw poi lat: " + position.coords.latitude);
 
             var container = $('#map_canvas');
             //var zoomLevel = $('#zoomLevel');
@@ -206,11 +206,10 @@ var locationApi = {
 
 
             alert("draw poi 2");
-            var mapOptions = {
-            center: myLatLong,
-            zoom: 19,
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
+            var mapOptions = {  center: myLatLong,
+                                zoom: 19,
+                                mapTypeId: google.maps.MapTypeId.ROADMAP
+                                };
         
 
             alert("draw poi 3");

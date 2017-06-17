@@ -101,6 +101,7 @@
                             <a href="#" onclick="locationApi.sendDummyLocation();" class="button button-big button-fill button-raised color-lightblue">Send dummy data</a>
                             <br/>
 
+                            <button id="getLocation"> klik</button>
 
                          <!--   <p class="buttons-row theme-pink">
                                 <a href="#" id="initWatch" onclick="locationApi.initiate_watchlocation();" class="button button-big">Put Watch</a>
@@ -156,11 +157,12 @@
     <script type="text/javascript" src="js/my-app.js"></script>
     <script type="text/javascript" src="js/index.js"></script>
     <script type="text/javascript">
-        app.initialize();
 
-        $(document).ready(function () {
+     /*   $(document).ready(function () {
+
+            app.initialize();
             
-          /*  $("#initWatch").click(function(){
+            $("#initWatch").click(function(){
                 $("#initWatch").toggleClass("active");
                 $("#stopWatch").toggleClass("active");
 
@@ -174,15 +176,105 @@
 
                 locationApi.stop_watchlocation();
             });
-*/
+
 
 
 
 
 
         });
-
+*/
        // var watchProcess = null; // must be after $doc.ready()
+
+
+      app.initialize();
+       $(document).ready(function () {
+
+                $('#getLocation').click(getLocation);
+                $('#initWatch').click(initiate_watchlocation);
+                $('#stopWatch').click(stop_watchlocation);
+
+               // initiate_watchlocation();
+
+            });
+
+            
+            var watchProcess = null; // must be after $doc.ready()
+
+
+            function getLocation(){
+                //alert("get location in");
+                navigator.geolocation.getCurrentPosition(handleSuccess,handleError);
+            }
+
+            function initiate_watchlocation() {  
+                alert("pre check null watchdog");
+                if(watchProcess == null){
+                alert("not null watchdog");
+                watchProcess = navigator.geolocation.watchPosition(handleSuccess,handleError);
+                }
+            } 
+
+            function stop_watchlocation() {  
+                if(watchProcess != null){
+                navigator.geolocation.clearWatch(watchProcess);
+                }
+            } 
+
+            function handleSuccess(position){
+                alert("handle success");
+                drawMap(position);
+            }
+
+            function handleError(error){
+                switch(error.code)
+                {
+                case error.PERMISSION_DENIED: alert("User did not share geolocation data");break;  
+                case error.POSITION_UNAVAILABLE: alert("Could not detect current position");break;  
+                case error.TIMEOUT: alert("Retrieving position timed out");break;  
+                default: alert("Unknown Error");break;  
+                }
+            }
+
+
+            function drawMap(position) {
+                alert("draw poi");
+                var container = $('#map_canvas');
+                //var zoomLevel = $('#zoomLevel');
+                var myLatLong = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+                var mapOptions = {
+                center: myLatLong,
+                zoom: 19,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+                };
+                var map = new google.maps.Map(container[0],mapOptions);
+                container.css('display','block');
+                var marker = new google.maps.Marker({ 
+                position: myLatLong,
+                map:map,
+                title:"My Position (Accuracy of Position: " + position.coords.accuracy + " Meters), Altitude: " 
+                    + position.coords.altitude + ' Altitude Accuracy: ' + position.coords.altitudeAccuracy
+                });
+            }
+
+            function drawStaticMap(position){
+                var container = $('#map_canvas');
+                var imageUrl = "http://maps.google.com/maps/api/staticmap?sensor=false&center=" + position.coords.latitude + "," +  
+                            position.coords.longitude + "&zoom=18&size=640x500&markers=color:blue|label:S|" +  
+                            position.coords.latitude + ',' + position.coords.longitude;  
+
+                container.css({
+                'display':'block',
+                'width' : 640
+                });
+                $('<img/>',{
+                src : imageUrl
+                }).appendTo(container);
+            } 
+
+
+
+
 
     </script>
 </body>
