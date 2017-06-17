@@ -110,7 +110,7 @@ var locationApi = {
         var longitude = position.coords.longitude;
         var latitude = position.coords.latitude;
 
-
+        alert("success");
         locationApi.drawMap(position);
 
         // Send coordinates to server
@@ -196,23 +196,41 @@ var locationApi = {
     },
 
     drawMap: function(position) {
-        // alert("draw poi");
+            alert("draw poi");
+
             var container = $('#map_canvas');
             //var zoomLevel = $('#zoomLevel');
+
+            alert("draw poi 1");
             var myLatLong = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+
+
+            alert("draw poi 2");
             var mapOptions = {
             center: myLatLong,
             zoom: 19,
             mapTypeId: google.maps.MapTypeId.ROADMAP
-            };
+        };
+        
+
+            alert("draw poi 3");
             var map = new google.maps.Map(container[0],mapOptions);
+
+
+            alert("draw poi 4");
             container.css('display','block');
+
+
+            alert("draw poi 5"); 
             var marker = new google.maps.Marker({ 
             position: myLatLong,
             map:map,
             title:"My Position (Accuracy of Position: " + position.coords.accuracy + " Meters), Altitude: " 
                 + position.coords.altitude + ' Altitude Accuracy: ' + position.coords.altitudeAccuracy
             });
+
+            alert("draw poi end");
+
     }
 
 
