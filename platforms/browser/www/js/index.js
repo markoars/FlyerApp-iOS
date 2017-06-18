@@ -41,7 +41,6 @@ var app = {
        /* var parentElement = document.getElementById(id);
         var listeningElement = parentElement.querySelector('.listening');
         var receivedElement = parentElement.querySelector('.received');
-
         listeningElement.setAttribute('style', 'display:none;');
         receivedElement.setAttribute('style', 'display:block;');
 */
@@ -167,10 +166,10 @@ var googleMapApi = {
 
             var mapContainer = $('#googleMap');
 
-            var myLatLong = new google.maps.LatLng(41.9961439,21.4318572); // Skopje
+            var newLatLong = new google.maps.LatLng(41.9961439,21.4318572); // Skopje
 
             var mapProp= {
-                center: myLatLong,
+                center: newLatLong,
                 zoom:16,
                 draggable: false ,
                 streetViewControl: false ,
@@ -182,35 +181,26 @@ var googleMapApi = {
             };
             map = new google.maps.Map(mapContainer[0],mapProp);
 
-           // var marker = new google.maps.Marker({ position: myLatLong, map:map });
+
+            var marker = new google.maps.Marker({ position: newLatLong, map:map });
     },
 
 
     drawMap: function(position) {
 
-           // alert("index.js - google map Api- draw poi lat: " + position.coords.latitude);
 
-           // var mapContainer = $('#googleMap');
+            alert("index.js - google map Api- draw poi lat: " + position.coords.latitude + ";;" + position.coords.longitude);
 
-            var myLatLong = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
 
-          /*  var mapProp= {
-                center: myLatLong,
-                zoom:16,
-                draggable: false ,
-                streetViewControl: false ,
-                // mapTypeControl: false,
-                disableDoubleClickZoom: true,
-                scrollwheel: false,
-                backgroundColor: '#f2efe9',
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-            };*/
-            //var map=new google.maps.Map(mapContainer[0],mapProp);
+            var newLatLong = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
 
-            //var marker = new google.maps.Marker({ position: myLatLong, map:map });
+            var marker = new google.maps.Marker({ position: newLatLong, map:map });
+
+            map.panTo(newLatLong); // move to the next marker
+
             //alert("1");
             //googleMapApi.clearMarkers();
-            googleMapApi.addMarker(myLatLong);
+            //googleMapApi.addMarker(newLatLong);
     },
 
 
@@ -225,7 +215,7 @@ var googleMapApi = {
             $('<img/>',{
             src : imageUrl
             }).appendTo(container);
-    },
+    }/*,
 
 
     // Sets the map on all markers in the array.
@@ -243,13 +233,13 @@ var googleMapApi = {
 
       // Adds a marker to the map and push to the array.
       addMarker: function (location) {
-         // alert("add marker");
+          alert("add marker");
         var marker = new google.maps.Marker({
           position: location,
           map: map
         });
         markers.push(marker);
-      }
+      }*/
 
 };
 

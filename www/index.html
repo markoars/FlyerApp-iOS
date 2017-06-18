@@ -152,6 +152,8 @@
     <script type="text/javascript">
 
        app.initialize();
+       var map = null;
+       var test = 7;
        $(document).ready(function () {
 
                 $('#camera').click(cameraApi.takePicture);
@@ -164,7 +166,7 @@
 
             
             var watchProcess = null; // must be after $doc.ready()
-            var map = null;
+            var markers = [];
     </script>
 
 
