@@ -49,27 +49,19 @@ var app = {
 
         console.log('Received Event: ' + id);
     }
-
-
-
-
-
-
 };
 
 
 // ############################ Camera ############################
 var cameraApi = {
 
-
-    // ############################ Camera #################################
     takePicture: function() {
        // alert("camera");
       navigator.camera.getPicture( function( imageURI ) {
         alert( imageURI );
       },
       function( message ) {
-        alert( message );
+        //alert( message );
       },
       {
         quality: 50,
@@ -84,24 +76,20 @@ var cameraApi = {
 // ############################ Geo Location ############################
 var locationApi = {
 
-
     getLocation: function(){
-
-        alert("start");
         navigator.geolocation.getCurrentPosition(locationApi.onGetLocationSuccess, locationApi.onGetLocationError);
-        alert("end");
     },
 
     onGetLocationSuccess: function(position){
 
-        alert("index.js - success");
+        //alert("GPS success");
         googleMapApi.drawMap(position);
 
         webApi.sendCoordinatesToServer(position);
     },
     
     onGetLocationError: function(error){
-        alert("index.js - the code is " + error.code + ". \n" + "message: " + error.message);
+        //alert("index.js - the code is " + error.code + ". \n" + "message: " + error.message);
 
         switch(error.code)
         {
@@ -119,9 +107,8 @@ var locationApi = {
             $("#initWatch").toggleClass("active");
             $("#stopWatch").toggleClass("active");
 
-
             if(watchProcess == null){
-            alert("watch start");
+            //alert("watch start");
             watchProcess = navigator.geolocation.watchPosition(locationApi.watchLocationSuccess, locationApi.watchLocationError);
             }
     },
@@ -134,16 +121,20 @@ var locationApi = {
             if(watchProcess != null){
             navigator.geolocation.clearWatch(watchProcess);
             watchProcess = null;
-            alert("index.js - watch stopped");
+           // alert("index.js - watch stopped");
             }
     },
 
     watchLocationSuccess: function(position){
-            alert("index.js - handle success");
-            googleMapApi.drawMap(position);
+
+        //alert("index.js - handle success");
+
+        googleMapApi.drawMap(position);
+
+        webApi.sendCoordinatesToServer(position);
     },
 
-     watchLocationError: function(error){
+    watchLocationError: function(error){
         
         switch(error.code)
         {
@@ -152,9 +143,7 @@ var locationApi = {
             case error.TIMEOUT: alert("Retrieving position timed out");break;  
             default: alert("Unknown Error");break;  
         }
-    },
-
-    
+    }
 };
 
 
@@ -171,30 +160,29 @@ var googleMapApi = {
             var mapProp= {
                 center: newLatLong,
                 zoom:16,
-                draggable: false ,
+                //draggable: false ,
                 streetViewControl: false ,
-                // mapTypeControl: false,
+                mapTypeControl: false,
                 disableDoubleClickZoom: true,
                 scrollwheel: false,
                 backgroundColor: '#f2efe9',
                 mapTypeId: google.maps.MapTypeId.ROADMAP
             };
+
             map = new google.maps.Map(mapContainer[0],mapProp);
 
-
-            var marker = new google.maps.Marker({ position: newLatLong, map:map });
+            //var newMarker = new google.maps.Marker({ position: newLatLong, map:map });
     },
 
 
     drawMap: function(position) {
 
 
-            alert("index.js - google map Api- draw poi lat: " + position.coords.latitude + ";;" + position.coords.longitude);
-
+           // alert("index.js - google map Api- draw poi lat: " + position.coords.latitude + ";;" + position.coords.longitude);
 
             var newLatLong = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
 
-            var marker = new google.maps.Marker({ position: newLatLong, map:map });
+            var newMarker = new google.maps.Marker({ position: newLatLong, map:map });
 
             map.panTo(newLatLong); // move to the next marker
 
@@ -247,38 +235,34 @@ var googleMapApi = {
 // ############################ Web ############################
 var webApi = {
 
-
-    sendDummyLocation: function(){
-
-
-        alert("start dummy");
-        $.getJSON('http://maxbet.mk.azhar.arvixe.com/api/products/1/333/333/')
-                .done(function (data) {
-                    alert("sucessfully inserted coordinate to server");
-                })
-                .fail(function (jqXHR, textStatus, err) {
-                        alert("fail gps 1 " + textStatus);
-                 });
-        alert("end dummy");
-    },
-
-
     sendCoordinatesToServer: function(position){
 
             var longitude = position.coords.longitude;
             var latitude = position.coords.latitude;
 
-            alert("index.js - send coordinates to Server enter");
+            //alert("index.js - send coordinates to Server enter");
 
             // Send coordinates to server
             $.getJSON('http://maxbet.mk.azhar.arvixe.com/api/products/1/' + longitude + '/' + latitude + '/')
                     .done(function (data) {
-                        alert("sucessfully inserted coordinate to server long: " + longitude + " lat: " + latitude);
+                        //alert("Sucessfully send coord to server. long: " + longitude + " lat: " + latitude);
+                    })
+                    .fail(function (jqXHR, textStatus, err) {
+                            //alert("Failed to send coord to server. " + textStatus);
+                    });
+
+    },
+
+    sendDummyLocation: function(){
+
+            alert("start dummy");
+            $.getJSON('http://maxbet.mk.azhar.arvixe.com/api/products/1/333/333/')
+                    .done(function (data) {
+                        alert("sucessfully inserted coordinate to server");
                     })
                     .fail(function (jqXHR, textStatus, err) {
                             alert("fail gps 1 " + textStatus);
                     });
-
+            alert("end dummy");
     }
-
 };
