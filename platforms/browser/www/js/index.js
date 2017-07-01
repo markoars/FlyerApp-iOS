@@ -58,8 +58,13 @@ var cameraApi = {
     takePicture: function() {
        // alert("camera");
       navigator.camera.getPicture( function( imageURI ) {
+
+          setTimeout(function() { 
+            
           alert('ddd');
         alert( imageURI );
+         }, 0);
+
       },
       function( message ) {
         alert( message );
