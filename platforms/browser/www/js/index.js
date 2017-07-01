@@ -28,6 +28,27 @@ var app = {
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents: function() {
         document.addEventListener('deviceready', this.onDeviceReady, false);
+
+        document.addEventListener('resume', function(evt) {
+            if(evt.action === 'resume' && evt.pendingResult) {
+                var r = evt.pendingResult;
+                if(r.pluginServiceName === 'Camera' && r.pluginStatus === 'OK') {
+                // r.result contains file:/// url or a base64 image.
+
+                    $("#cameraTest").html("IN");
+                    var smallImage = document.getElementById('smallImage');
+
+                    $("#cameraTest").html("go22");
+                smallImage.style.display = 'block';
+
+                    $("#cameraTest").html("go33");
+                smallImage.src = r.result;
+
+
+                }
+            }
+        }, false);
+
     },
     // deviceready Event Handler
     //
@@ -82,7 +103,7 @@ var cameraApi = {
       smallImage.style.display = 'block';
 
          $("#cameraTest").html("go3");
-      smallImage.src = imageURI
+      smallImage.src = imageURI;
 
          $("#cameraTest").html("go4");
 
@@ -92,7 +113,7 @@ var cameraApi = {
         alert( message );
       },
       {
-        quality: 50,
+        quality: 10,
         destinationType: Camera.DestinationType.FILE_URI
       });
     }
