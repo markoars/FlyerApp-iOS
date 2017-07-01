@@ -56,6 +56,8 @@ var app = {
 var cameraApi = {
 
     takePicture: function() {
+
+         $("#cameraTest").html("ZZZZZZZ");
        // alert("camera");
       navigator.camera.getPicture( function( imageURI ) {
 
@@ -65,7 +67,6 @@ var cameraApi = {
         alert( imageURI );
          }, 0);*/
 
-         $("#cameraTest").html(imageURI);
 
       },
       function( message ) {
