@@ -79,7 +79,6 @@ var cameraApi = {
       var largeImage = document.getElementById('largeImage');
 
          $("#cameraTest").html("go2");
-      largeImage.style.display = 'block';
 
          $("#cameraTest").html("go3");
       largeImage.src = imageURI
