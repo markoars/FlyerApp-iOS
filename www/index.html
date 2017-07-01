@@ -165,13 +165,19 @@
        app.initialize();
        var map = null;
        var test = 7;
+       var destinationType;
        $(document).ready(function () {
+
+
+                destinationType=navigator.camera.DestinationType;
 
                 $('#camera').click(cameraApi.takePicture);
                 $('#getLocation').click(locationApi.getLocation);
                 //$('#sendDummyLocation').click(webApi.sendDummyLocation());
                 $('#initWatch').click(locationApi.init_WatchLocation);
                 $('#stopWatch').click(locationApi.stop_WatchLocation);
+
+
 
             });
 
@@ -183,6 +189,7 @@
 
 
             function capturePhoto() {
+                alert("enter cam");
                 // Take picture using device camera and retrieve image as base64-encoded string
                 navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 50,
                     destinationType: destinationType.DATA_URL });
