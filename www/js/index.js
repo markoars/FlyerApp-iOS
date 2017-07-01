@@ -62,7 +62,7 @@ var cameraApi = {
         alert( imageURI );
       },
       function( message ) {
-        //alert( message );
+        alert( message );
       },
       {
         quality: 50,
