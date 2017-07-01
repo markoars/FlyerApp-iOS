@@ -59,11 +59,13 @@ var cameraApi = {
        // alert("camera");
       navigator.camera.getPicture( function( imageURI ) {
 
-          setTimeout(function() { 
+         /* setTimeout(function() { 
             
           alert('ddd');
         alert( imageURI );
-         }, 0);
+         }, 0);*/
+
+         $("#cameraTest").html(imageURI);
 
       },
       function( message ) {
