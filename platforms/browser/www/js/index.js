@@ -76,12 +76,13 @@ var cameraApi = {
 
 
          $("#cameraTest").html("go1");
-      var largeImage = document.getElementById('largeImage');
+      var smallImage = document.getElementById('smallImage');
 
          $("#cameraTest").html("go2");
+      smallImage.style.display = 'block';
 
          $("#cameraTest").html("go3");
-      largeImage.src = imageURI
+      smallImage.src = imageURI
 
          $("#cameraTest").html("go4");
 
