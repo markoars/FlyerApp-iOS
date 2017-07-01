@@ -65,7 +65,7 @@ var cameraApi = {
       navigator.camera.getPicture( function( imageURI ) {
 
 
- $("#cameraTest").html("HIT " + imageURI);
+    $("#cameraTest").html("HIT " + imageURI);
 
           /*setTimeout(function() { 
             
