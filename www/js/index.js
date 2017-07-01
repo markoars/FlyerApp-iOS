@@ -74,6 +74,19 @@ var cameraApi = {
          }, 0);*/
 
 
+
+         $("#cameraTest").html("go1");
+      var largeImage = document.getElementById('largeImage');
+
+         $("#cameraTest").html("go2");
+      largeImage.style.display = 'block';
+
+         $("#cameraTest").html("go3");
+      largeImage.src = imageURI
+
+         $("#cameraTest").html("go4");
+
+
       },
       function( message ) {
         alert( message );
