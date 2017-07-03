@@ -29,7 +29,11 @@ var app = {
     bindEvents: function() {
         document.addEventListener('deviceready', this.onDeviceReady, false);
 
-        document.addEventListener('resume', function(evt) {
+
+
+
+        // When app`s getting killed by the GBC, and it resumes, this method is called:
+       /* document.addEventListener('resume', function(evt) {
             if(evt.action === 'resume' && evt.pendingResult) {
                 var r = evt.pendingResult;
                 if(r.pluginServiceName === 'Camera' && r.pluginStatus === 'OK') {
@@ -37,17 +41,13 @@ var app = {
 
                     $("#cameraTest").html("IN");
                     var smallImage = document.getElementById('smallImage');
-
-                    $("#cameraTest").html("go22");
-                smallImage.style.display = 'block';
-
-                    $("#cameraTest").html("go33");
-                smallImage.src = r.result;
-
-
+                    smallImage.style.display = 'block';
+                    smallImage.src = r.result;
                 }
             }
         }, false);
+    */
+
 
     },
     // deviceready Event Handler
@@ -62,14 +62,8 @@ var app = {
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
-       /* var parentElement = document.getElementById(id);
-        var listeningElement = parentElement.querySelector('.listening');
-        var receivedElement = parentElement.querySelector('.received');
-        listeningElement.setAttribute('style', 'display:none;');
-        receivedElement.setAttribute('style', 'display:block;');
-*/
 
-        googleMapApi.drawMapInitial();
+        googleMapApi.createMapInitial();
 
         console.log('Received Event: ' + id);
     }
@@ -81,41 +75,34 @@ var cameraApi = {
 
     takePicture: function() {
 
-         $("#cameraTest").html("ZZZZZZZ");
-       // alert("camera");
-      navigator.camera.getPicture( function( imageURI ) {
+        $("#cameraTest").html("camera");
 
+        if(lastLocation != null)
+        {
+            //alert("not null");
+            googleMapApi.addMarkerImage();
+        }
+        else
+        {
+            alert("last location is null");
+        }
 
-    $("#cameraTest").html("HIT " + imageURI);
+        navigator.camera.getPicture( function( imageURI ) {
 
-          /*setTimeout(function() { 
-            
-          alert('ddd');
-        alert( imageURI );
-         }, 0);*/
-
-
-
-         $("#cameraTest").html("go1");
-      var smallImage = document.getElementById('smallImage');
-
-         $("#cameraTest").html("go2");
-      smallImage.style.display = 'block';
-
-         $("#cameraTest").html("go3");
-      smallImage.src = imageURI;
-
-         $("#cameraTest").html("go4");
-
-
+        var smallImage = document.getElementById('smallImage');
+        smallImage.style.display = 'block';
+        smallImage.src = imageURI;
+        //$("#cameraTest").html(imageURI);
       },
       function( message ) {
         alert( message );
       },
       {
-        quality: 10,
+        quality: 20,
         destinationType: Camera.DestinationType.FILE_URI
       });
+
+
     }
     
 };
@@ -130,10 +117,10 @@ var locationApi = {
     },
 
     onGetLocationSuccess: function(position){
-
         //alert("GPS success");
-        googleMapApi.drawMap(position);
 
+        googleMapApi.addMarkerLocation(position);
+       
         webApi.sendCoordinatesToServer(position);
     },
     
@@ -178,7 +165,7 @@ var locationApi = {
 
         //alert("index.js - handle success");
 
-        googleMapApi.drawMap(position);
+        googleMapApi.addMarkerLocation(position);
 
         webApi.sendCoordinatesToServer(position);
     },
@@ -200,7 +187,7 @@ var locationApi = {
 var googleMapApi = {
 
 
-    drawMapInitial: function() {
+    createMapInitial: function() {
 
             var mapContainer = $('#googleMap');
 
@@ -209,7 +196,7 @@ var googleMapApi = {
             var mapProp= {
                 center: newLatLong,
                 zoom:16,
-                //draggable: false ,
+                draggable: false ,
                 streetViewControl: false ,
                 mapTypeControl: false,
                 disableDoubleClickZoom: true,
@@ -224,27 +211,65 @@ var googleMapApi = {
     },
 
 
-    drawMap: function(position) {
+    // Adds a marker to the map and push to the array.
+    addMarkerLocation: function(position) {
+
+        var newLatLong = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+
+        lastLocation = newLatLong; // Save last known location
+
+        googleMapApi.clearMarkers(); // Delete/Clear all previous
+
+        var marker = new google.maps.Marker({
+          position: newLatLong,
+          map: map
+        });
+
+        markersLocation.push(marker);
+        map.panTo(newLatLong); 
+      },
 
 
-           // alert("index.js - google map Api- draw poi lat: " + position.coords.latitude + ";;" + position.coords.longitude);
+    addMarkerImage: function(/*position*/) {
 
-            var newLatLong = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+       // var newLatLong = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 
-            var newMarker = new google.maps.Marker({ position: newLatLong, map:map });
+        var marker = new google.maps.Marker({
+            position: lastLocation,
+            map: map,
+            icon: new google.maps.MarkerImage("https://cdn3.iconfinder.com/data/icons/humano2/48x48/mimetypes/image-x-photo-cd.png") 
+        });
 
-            map.panTo(newLatLong); // move to the next marker
 
-            //alert("1");
-            //googleMapApi.clearMarkers();
-            //googleMapApi.addMarker(newLatLong);
+        markersImage.push(marker);
+        map.panTo(newLatLong); 
+    },
+
+    // Sets the map on all location markers in the array.
+    setLocationMarkersOnMap: function(mapObj) {
+        for (var i = 0; i < markersLocation.length; i++) {
+            markersLocation[i].setMap(mapObj);
+        }
     },
 
 
-    drawStaticMap: function(position) {
+    clearMarkers: function() {
+        googleMapApi.setLocationMarkersOnMap(null);
+    },
+
+    
+    deleteMarkers: function() {
+        googleMapApi.clearMarkers();
+        markersLocation = [];
+    },
+
+
+    createStaticMap: function(position) {
             var container = $('#googleMap');
-            var imageUrl = "https://maps.googleapis.com/maps/api/staticmap?sensor=false&center=" + position.coords.latitude + "," +  
-                        position.coords.longitude + "&zoom=18&size=640x500" + "&key=AIzaSyCXWhC15jIOu95QuaTBvRHYkc6Npi0HBvw";  
+
+            var latlon = position.coords.latitude + "," + position.coords.longitude;
+
+            var imageUrl = "https://maps.googleapis.com/maps/api/staticmap?center="+latlon+"&zoom=14&size=400x300&sensor=false&key=AIzaSyCXWhC15jIOu95QuaTBvRHYkc6Npi0HBvw";
 
             //https://maps.googleapis.com/maps/api/staticmap?center=52.47433501832194,9.891406250000045&zoom=18&size=640x500&markers=color:blue|label:S|52.47433501832194,9.891406250000045&key=AIzaSyCXWhC15jIOu95QuaTBvRHYkc6Npi0HBvw
             //https://maps.googleapis.com/maps/api/staticmap?center=Brooklyn+Bridge,New+York,NY        &zoom=13&size=600x300&markers=color:blue%7Clabel:S%7C40.702147,-74.015794&markers=color:green%7Clabel:G%7C40.711614,-74.012318&markers=color:red%7Clabel:C%7C40.718217,-73.998284&key=YOUR_API_KEY
@@ -252,31 +277,7 @@ var googleMapApi = {
             $('<img/>',{
             src : imageUrl
             }).appendTo(container);
-    }/*,
-
-
-    // Sets the map on all markers in the array.
-      setMapOnAll: function (map) {
-        for (var i = 0; i < markers.length; i++) {
-          markers[i].setMap(map);
-        }
-      },
-
-      // Removes the markers from the map, but keeps them in the array.
-      clearMarkers: function() {
-        //alert("2");
-        setMapOnAll(null);
-      },
-
-      // Adds a marker to the map and push to the array.
-      addMarker: function (location) {
-          alert("add marker");
-        var marker = new google.maps.Marker({
-          position: location,
-          map: map
-        });
-        markers.push(marker);
-      }*/
+    }
 
 };
 
