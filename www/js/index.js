@@ -77,6 +77,10 @@ var cameraApi = {
 
         $("#cameraTest").html("camera");
 
+        
+
+        navigator.camera.getPicture( function( imageURI ) {
+
         if(lastLocation != null)
         {
             //alert("not null");
@@ -86,8 +90,6 @@ var cameraApi = {
         {
             alert("last location is null");
         }
-
-        navigator.camera.getPicture( function( imageURI ) {
 
         var smallImage = document.getElementById('smallImage');
         smallImage.style.display = 'block';
