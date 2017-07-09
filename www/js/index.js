@@ -59,6 +59,12 @@ var app = {
 
 
          $("#cameraTest").html("Readey");
+
+
+            
+
+
+
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
@@ -81,6 +87,13 @@ var cameraApi = {
 
         navigator.camera.getPicture( function( imageURI ) {
 
+
+
+        var smallImage = document.getElementById('smallImage');
+        smallImage.style.display = 'block';
+        smallImage.src = imageURI;
+
+        
         if(lastLocation != null)
         {
             //alert("not null");
@@ -91,10 +104,7 @@ var cameraApi = {
             alert("last location is null");
         }
 
-        var smallImage = document.getElementById('smallImage');
-        smallImage.style.display = 'block';
-        smallImage.src = imageURI;
-        //$("#cameraTest").html(imageURI);
+        
       },
       function( message ) {
         alert( message );
@@ -115,11 +125,15 @@ var cameraApi = {
 var locationApi = {
 
     getLocation: function(){
-        navigator.geolocation.getCurrentPosition(locationApi.onGetLocationSuccess, locationApi.onGetLocationError);
+
+                            
+        navigator.geolocation.getCurrentPosition(locationApi.onGetLocationSuccess, locationApi.onGetLocationError, geo_options);
     },
 
     onGetLocationSuccess: function(position){
         //alert("GPS success");
+
+        $("#accuracy").html("Accuracy:" + position.coords.accuracy + " meters.");
 
         googleMapApi.addMarkerLocation(position);
        
@@ -145,9 +159,10 @@ var locationApi = {
             $("#initWatch").toggleClass("active");
             $("#stopWatch").toggleClass("active");
 
+
             if(watchProcess == null){
             //alert("watch start");
-            watchProcess = navigator.geolocation.watchPosition(locationApi.watchLocationSuccess, locationApi.watchLocationError);
+            watchProcess = navigator.geolocation.watchPosition(locationApi.watchLocationSuccess, locationApi.watchLocationError, geo_options);
             }
     },
 
@@ -167,19 +182,46 @@ var locationApi = {
 
         //alert("index.js - handle success");
 
+
+        $("#accuracy").html("Accuracy:" + position.coords.accuracy + " meters.");
+
         googleMapApi.addMarkerLocation(position);
 
         webApi.sendCoordinatesToServer(position);
     },
 
     watchLocationError: function(error){
+
+
+        var dt = new Date();
+        var time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
         
         switch(error.code)
         {
-            case error.PERMISSION_DENIED: alert("User did not share geolocation data");break;  
-            case error.POSITION_UNAVAILABLE: alert("Could not detect current position");break;  
-            case error.TIMEOUT: alert("Retrieving position timed out");break;  
-            default: alert("Unknown Error");break;  
+            case error.PERMISSION_DENIED: 
+            //alert("User did not share geolocation data");
+            $("#errorLogMsg").html("User did not share geolocation data: ");
+            $("#errorLogTime").html(time);
+
+            break;  
+
+            case error.POSITION_UNAVAILABLE: 
+            //alert("Could not detect current position");
+            $("#errorLogMsg").html("Could not detect current position: ");
+            $("#errorLogTime").html(time);
+            break;  
+
+            case error.TIMEOUT: 
+            //alert("Retrieving position timed out");
+            $("#errorLogMsg").html("Retrieving position timed out: ");
+            $("#errorLogTime").html(time);
+            break;  
+
+            default: 
+            //alert("Unknown Error");
+            $("#errorLogMsg").html("Unknown Error: ");
+            $("#errorLogTime").html(time);
+            break;  
         }
     }
 };

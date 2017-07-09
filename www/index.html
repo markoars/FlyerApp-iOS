@@ -103,12 +103,17 @@
                             <a href="#" id="getLocation" class="button button-big button-fill button-raised color-green">Single Location</a>
                             <br/>
 
-                                    <div id="cameraTest"> test</div>
-
-
-
+                            <div id="cameraTest"> test</div>
                                     
-                            <img style="width:70px;height:70px;" id="smallImage" src="" />             
+                            <img style="width:70px;height:70px;" id="smallImage" src="" />  
+
+                            <span id="errorLogMsg"></span>   
+                             
+                            <span>
+                            <b id="errorLogTime"></b> 
+                            </span>      
+
+                            <p id="accuracy"></p>
 
                           <!--  <a href="#" id="sendDummyLocation" onclick="webApi.sendDummyLocation();" class="button button-big button-fill button-raised color-lightblue">Send dummy data</a> -->
                             <br/>
@@ -169,6 +174,14 @@
        var markersLocation = [];
        var markersImage = [];
        var test = 7;
+
+
+        var geo_options = { enableHighAccuracy: true, 
+                            timeout: 5000,
+                            maximumAge: 0
+                        };
+                        
+
        $(document).ready(function () {
 
                 $('#camera').click(cameraApi.takePicture);
